@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UserRepository = require('../repository/user-repository');
 const {JWT_KEY} = require('../config/serverConfig');
+const AppErrors = require('../utils/error-handler');
 
 class UserService {
   constructor() {
@@ -14,6 +15,9 @@ class UserService {
       return user;
       
     } catch (error) {
+      if(error.name == 'SequelizeValidationError'){
+        throw error;
+      }
       console.log("Something wnet wrong in service layer ");
       throw error;
       
@@ -90,6 +94,18 @@ class UserService {
       throw error;
       
     }
+  }
+
+  isAdmin(userId){
+    try {
+      return this.userRepository.isAdmin(userId);
+      
+    } catch (error) {
+      console.log('Somthing went wrong in Service layer');
+      throw error;
+      
+    }
+
   }
 }
 
